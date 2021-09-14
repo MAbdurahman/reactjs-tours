@@ -10,6 +10,11 @@ const [loading, setLoading] = useState(true);
 const [tours, setTours] = useState([]);
 
 	//**************** functions ****************//
+  const removeTour = id => {
+		const newTours = tours.filter(tour => tour.id !== id);
+		setTours(newTours);
+  };
+
   const fetchTours = async () => {
 		setLoading(true);
 		try {
@@ -17,7 +22,7 @@ const [tours, setTours] = useState([]);
 			const tours = await response.json();
 			setLoading(false);
 			setTours(tours);
-      
+
 		} catch (error) {
 			setLoading(false);
 			console.log(error);
@@ -36,10 +41,22 @@ const [tours, setTours] = useState([]);
       </main>
     )
   }
+    if (tours.length === 0) {
+			return (
+				<main>
+					<div className='title'>
+						<h2>{tours.length} tours to display</h2>
+						<button className='btn' onClick={() => fetchTours()}>
+							refresh
+						</button>
+					</div>
+				</main>
+			);
+		}
 
 	return (
 		<main>
-			<TourList tours={tours} />
+			<TourList tours={tours} removeTour={removeTour}/>
 		</main>
 	);
 }
